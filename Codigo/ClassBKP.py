@@ -8,15 +8,14 @@ Player_Data = client["Players"].get_collection("Player_Data")
 
 class Player :
 
-    def __init__(self, atr) :
+    def __init__(self, Nome, VidaMaxima, Vida, ManaMaxima, Mana, Corrupcao) :
 
-        self.Nome = atr[0] 
-        self.Vida_Maxima = int(atr[1])
-        self.Hp = int(atr[1])
-        self.Mana_Maxima = int(atr[2])
-        self.Mana = int(atr[2])
-        self.Corrupcao = int(atr[3])
-        self.DiscordID = atr[4]
+        self.Nome = Nome 
+        self.Vida_Maxima = VidaMaxima
+        self.Hp = Vida
+        self.Mana_Maxima = ManaMaxima
+        self.Mana = Mana
+        self.Corrupcao = Corrupcao
         # Retorna documento para variavel
         self.PlayerStats = list(Player_Data.find({"Nome" : self.Nome}).limit(1)) 
  
@@ -25,8 +24,6 @@ class Player :
 
         else :
             Player_Data.insert_one({
-
-                "DiscordID" : self.DiscordID,
                 "Nome" : self.Nome,
                 "Vida Maxima" : self.Vida_Maxima,
                 "Hp" : self.Hp,
@@ -79,3 +76,5 @@ class Player :
 
     def Change_Corrupt(self, value) : 
         Player_Data.update_one({"Nome" : self.Nome}, {"$set" : {"Corrupcao" : value}})
+
+
