@@ -1,5 +1,5 @@
 from pymongo.mongo_client import MongoClient
-uri = ""
+uri = "mongodb+srv://FelipePalermo:ApiKey@torredecristal.zvmqwjj.mongodb.net/?retryWrites=true&w=majority"
 client = MongoClient(uri)
 
 Player_Data = client["Players"].get_collection("Player_Data")
@@ -56,7 +56,7 @@ class Player :
     @staticmethod
     def Change_MaxHp(DiscordID, value) : 
         Player_Data.update_one({"DiscordID" : DiscordID}, {"$inc" : {"Vida Maxima" : value}})
-
+ 
     @staticmethod
     def Change_Hp(DiscordID, value) : 
         PlayerStats =  list(Player_Data.find({"DiscordID" : DiscordID}).limit(1))

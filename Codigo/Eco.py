@@ -1,6 +1,7 @@
 import nextcord
 import discord
 import asyncio
+import random
 from nextcord.ext import commands 
 from Class import Player  
 
@@ -10,9 +11,44 @@ Eco = commands.Bot(command_prefix="#", intents=intents)
 
 # Show command list ------------------------------------------------------
 @Eco.command()
-async def commands(ctx):
-    await ctx.reply("currently available commands :\n\n #Create - Start your character creation process\n#sstatus - Show your character status\n\
-#chp - Add or decrease from HP\n#cmp - add or decrease from mp\n#cname - Change your character name")
+async def Help(ctx):
+
+    embed = discord.Embed(
+            colour = discord.Colour.dark_purple(),
+            title = "Status",
+            description = "#create - create a new character\n#sstatus - show your character status\n#chp  (5 or -5) - change hp\n#cmp (5 or -5) - change mp\n#cname new name - change character name")
+
+    embed.set_thumbnail(url="https://i.imgur.com/8mPrGNU.png")
+    await ctx.reply(embed=embed)
+
+# Roll dice ---------------------------------------------------------------
+@Eco.command()
+async def d(ctx):
+
+    images = ["https://i.imgur.com/EA7tYOm.png", "https://i.imgur.com/xY4gUyW.png"] 
+
+    Dice_Faces = ctx.message.content.split(" ")
+    Dice_Faces = Dice_Faces[1]
+
+    Roll = random.randint(1, int(Dice_Faces)) 
+    
+    if Roll > int(Dice_Faces) / 2 :
+        message = "🎲 : " + str(Roll) 
+        images = images[0]
+        
+    else : 
+        message = "🎲 : " + str(Roll)
+        images = images[1]
+
+    embed = discord.Embed(
+            colour = discord.Colour.dark_purple(),
+            title = "Dice result",
+            description = message)
+
+    embed.set_thumbnail(images)
+
+    await ctx.reply(embed=embed)
+
 
 # Create character in database ------------------------------------------- 
 @Eco.command()
@@ -77,7 +113,7 @@ async def cname(ctx) :
 # Show Status ------------------------------------- 
 @Eco.command()
 async def sstatus(ctx):
-    Status = Player.Show_Inv(ctx.author.id)
+    Status = Player.Show_Status(ctx.author.id)
     str_Status = "Name : " + Status["Nome"] + "\n" + "Max Hp  : " + str(Status["Vida Maxima"]) + "\n" + "HP : " + str(Status["Hp"]) +  "\n" + "Max Mp : " + str(Status["Mana Maxima"]) +  "\n" + "Mp : " + str(Status["Mp"]) +  "\n" + "Corruption  : " + str(Status["Corrupcao"])
 
     embed = discord.Embed(
@@ -99,7 +135,7 @@ async def sstatus(ctx):
 
 
 # Conexao ------------------------------
-Token = "MTEwMjI0MjEyNDI2ODgzMDgyMQ.Gj_MTa.JKGLb8oMF6P0veqsyWDd6CtCptNFKEUtwmSXSE"
+Token = "MTEwMjI0MjEyNDI2ODgzMDgyMQ.GGT7kN.dWzDGg54zzhc8TPQUBdAWpazdYJjaFsL6ZIe_A"
 
 Eco.run(Token)
 
