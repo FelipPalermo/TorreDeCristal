@@ -16,7 +16,7 @@ async def Help(ctx):
     embed = discord.Embed(
             colour = discord.Colour.dark_purple(),
             title = "Status",
-            description = "#create - create a new character\n#sstatus - show your character status\n#chp  (5 or -5) - change hp\n#cmp (5 or -5) - change mp\n#cname new name - change character name")
+            description = "#create - create a new character\n#sstatus - show your character status\n#chp  (5 or -5) - change hp\n#cmp (5 or -5) - change mp\n#cname (new name) - change character name\n#cimage (imageURL) - Change your character image")
 
     embed.set_thumbnail(url="https://i.imgur.com/8mPrGNU.png")
     await ctx.reply(embed=embed)
@@ -88,20 +88,21 @@ async def inv(ctx) :
     
     await user.send_message("Hello")
 
-# Change Status -----------------------------------
-# c = change
+# Change hp ----------------------------------------
 @Eco.command()
 async def chp(ctx) :
     value = ctx.message.content.split(" ")
     ID = ctx.author.id
     Player.Change_Hp(ID, int(value[1])) 
 
+#Change mana -----------------------------------------
 @Eco.command()
 async def cmp(ctx) :
     value = ctx.message.content.split(" ")
     ID = ctx.author.id
     Player.Change_Mp(ID, int(value[1])) 
 
+# Change name ---------------------------------------
 @Eco.command()
 async def cname(ctx) : 
     Name = ctx.message.content.split(" ")
@@ -110,22 +111,34 @@ async def cname(ctx) :
 
     await ctx.send("Name changed successfully!")
 
+# Change image -------------------------------------
+@Eco.command()
+async def cimage(ctx):
+
+    message = ctx.message.content.split(" ")
+    Player.cimage(ctx.author.id, message[1]) 
+
 # Show Status ------------------------------------- 
 @Eco.command()
 async def sstatus(ctx):
     Status = Player.Show_Status(ctx.author.id)
-    str_Status = "Name : " + Status["Nome"] + "\n" + "Max Hp  : " + str(Status["Vida Maxima"]) + "\n" + "HP : " + str(Status["Hp"]) +  "\n" + "Max Mp : " + str(Status["Mana Maxima"]) +  "\n" + "Mp : " + str(Status["Mp"]) +  "\n" + "Corruption  : " + str(Status["Corrupcao"])
+    str_Status = "Name : " + Status["Name"] + "\n" + "Max Hp  : " + str(Status["Maximum life"]) + "\n" + "HP : " + str(Status["Hp"]) +  "\n" + "Max Mp : " + str(Status["Maximum mana"]) +  "\n" + "Mp : " + str(Status["Mp"]) +  "\n" + "Corruption  : " + str(Status["Corruption"])
 
     embed = discord.Embed(
             colour = discord.Colour.dark_purple(),
             title = "Status",
             description = str_Status)
 
-    embed.set_thumbnail(url="https://i.imgur.com/TyFTbsY.png")
+    embed.set_thumbnail(url=Player.Rimage(ctx.author.id))
     await ctx.reply(embed=embed)
 
 
 
+
+# Send a gif of the rock -------------------------------------
+@Eco.command()
+async def hentai(ctx):
+    await ctx.channel.send("https://tenor.com/bJMPt.gif")
 
 
 
@@ -135,7 +148,7 @@ async def sstatus(ctx):
 
 
 # Conexao ------------------------------
-Token = "MTEwMjI0MjEyNDI2ODgzMDgyMQ.GGT7kN.dWzDGg54zzhc8TPQUBdAWpazdYJjaFsL6ZIe_A"
+Token = ""
 
 Eco.run(Token)
 

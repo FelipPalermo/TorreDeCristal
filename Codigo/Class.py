@@ -30,12 +30,13 @@ class Player :
             Player_Data.insert_one({
 
                 "DiscordID" : self.DiscordID,
-                "Nome" : self.Nome,
-                "Vida Maxima" : self.Vida_Maxima,
+                "Name" : self.Nome,
+                "Maximum life" : self.Vida_Maxima,
                 "Hp" : self.Hp,
-                "Mana Maxima" : self.Mana_Maxima,
+                "Maximum mana" : self.Mana_Maxima,
                 "Mp" : self.Mana, 
-                "Corrupcao" : self.Corrupcao})
+                "Corruption" : self.Corrupcao,
+                "ImageUrl" : ""})
 
 # Check Exist ---------------------------------------------------------------------------------
     @staticmethod
@@ -55,15 +56,15 @@ class Player :
 # HP -----------------------------------------------------------------------------------------
     @staticmethod
     def Change_MaxHp(DiscordID, value) : 
-        Player_Data.update_one({"DiscordID" : DiscordID}, {"$inc" : {"Vida Maxima" : value}})
+        Player_Data.update_one({"DiscordID" : DiscordID}, {"$inc" : {"Maximum life" : value}})
  
     @staticmethod
     def Change_Hp(DiscordID, value) : 
         PlayerStats =  list(Player_Data.find({"DiscordID" : DiscordID}).limit(1))
 
        # If the value is greathr than the maxium hp, the hp goes to the maxium
-        if value + PlayerStats[0]["Hp"] > PlayerStats[0]["Vida Maxima"] :
-            Player_Data.update_one({"DiscordID" : DiscordID}, {"$set" : {"Hp" : PlayerStats[0]["Vida Maxima"]}})
+        if value + PlayerStats[0]["Hp"] > PlayerStats[0]["Maximum life"] :
+            Player_Data.update_one({"DiscordID" : DiscordID}, {"$set" : {"Hp" : PlayerStats[0]["Maximum life"]}})
          
         else :
             Player_Data.update_one({"DiscordID" : DiscordID}, {"$inc" : {"Hp" : value}})
@@ -75,7 +76,7 @@ class Player :
 # MP -----------------------------------------------------------------------------------------
     @staticmethod
     def Change_MaxMp(DiscordID, value) : 
-        Player_Data.update_one({"DiscordID" : DiscordID}, {"$inc" : {"Mana Maxima" : value}})
+        Player_Data.update_one({"DiscordID" : DiscordID}, {"$inc" : {"Maximum mana" : value}})
     
     @staticmethod
     def Change_Mp(DiscordID, value) : 
@@ -83,7 +84,7 @@ class Player :
 
        # if the value is greater than maxium Mp, Mp goes to the maxium
         if value + PlayerStats[0]["Mp"] > PlayerStats[0]["Mana Maxima"] :
-            Player_Data.update_one({"DiscordID" : DiscordID}, {"$set" : {"Mp" : PlayerStats[0]["Mana Maxima"]}})
+            Player_Data.update_one({"DiscordID" : DiscordID}, {"$set" : {"Mp" : PlayerStats[0]["Maximum mana"]}})
 
         else :
             Player_Data.update_one({"DiscordID" : DiscordID}, {"$inc" : {"Mp" : value}})
@@ -95,7 +96,7 @@ class Player :
 # Corruption -----------------------------------------------------------------------------------
     @staticmethod
     def Change_Corrupt(DiscordID, value) : 
-        Player_Data.update_one({"DiscordID" : DiscordID}, {"$set" : {"Corrupcao" : value}})
+        Player_Data.update_one({"DiscordID" : DiscordID}, {"$set" : {"Coruption" : value}})
 
 
 # Change name ----------------------------------------------------------------------------------
@@ -106,10 +107,27 @@ class Player :
             # If name array is greater than 2
             # exclude word"cname" and cast the list to string
             New_Name = " ".join(Name[1::])
-            Player_Data.update_one({"DiscordID" : DiscordID}, {"$set" : {"Nome" : New_Name}})
+            Player_Data.update_one({"DiscordID" : DiscordID}, {"$set" : {"Name" : New_Name}})
 
         else : 
-            Player_Data.update_one({"DiscordID" : DiscordID}, {"$set" : {"Nome" : Name[1]}})
+            Player_Data.update_one({"DiscordID" : DiscordID}, {"$set" : {"Name" : Name[1]}})
+
+# Add or change image --------------------------------------------------------------------------
+    @staticmethod
+    def cimage(DiscordID, ImageUrl) :
+
+        Player_Data.update_one({"DiscordID" : DiscordID}, {"$set" : {"ImageUrl" : ImageUrl}})
+
+# Return image ---------------------------------------------------------------------------------- 
+    @staticmethod
+    def Rimage(DiscordID) :   
+        PlayerStats =  list(Player_Data.find({"DiscordID" : DiscordID}).limit(1))
+
+        if PlayerStats[0]["ImageUrl"] == "" :
+            return "https://imgur.com/3be00df2-3ce0-4e04-8a51-c2a23f643219"
+
+        return PlayerStats[0]["ImageUrl"]
+
 
 # Show -----------------------------------------------------------------------------------------
     @staticmethod
@@ -121,3 +139,4 @@ class Player :
     @staticmethod
     def Show_Inve(DiscordID) :
         pass
+
