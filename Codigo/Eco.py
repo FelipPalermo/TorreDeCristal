@@ -90,12 +90,28 @@ async def inv(ctx) :
     
     await user.send_message("Hello")
 
-# Change hp ----------------------------------------
+# Change Hp ----------------------------------------
 @Eco.command()
 async def chp(ctx) :
     value = ctx.message.content.split(" ")
     ID = ctx.author.id
     Player.Change_Hp(ID, ctx.guild.id, int(value[1])) 
+
+# Change Max Hp ----------------------------------------
+@Eco.command()
+@commands.has_any_role("admin", "Admin", "GM", "moderator")
+async def cMhp(ctx) :
+    value = ctx.message.content.split(" ")
+    Player.Change_MaxHp(ctx.author.id, ctx.guild.id, int(value[1]))
+    Player.Change_Hp(ctx.author.id, ctx.guild.id, 1)
+
+# Change Max Mp ------------------------------------------
+@Eco.command()
+@commands.has_any_role("admin", "Admin", "GM", "moderator")
+async def cMmp(ctx) :
+    value = ctx.message.content.split(" ")
+    Player.Change_MaxMp(ctx.author.id, ctx.guild.id, int(value[1]))
+    Player.Change_Mp(ctx.author.id, ctx.guild.id, 1)  
 
 #Change mana -----------------------------------------
 @Eco.command()
@@ -174,7 +190,7 @@ async def d(ctx):
 
 
 # Conexao ------------------------------
-Token = "MTEwMjI0MjEyNDI2ODgzMDgyMQ.G964a0.zhJo1XrVPeSQMxHlYm0vaCi3A_Rkg2AD_0Cdus"
+Token = "MTEwMjI0MjEyNDI2ODgzMDgyMQ.GruJO6.Z_JAYBu0URaHj2REXcbNtNIcZMGQDGFdvP2EcI"
 
 Eco.run(Token)
 

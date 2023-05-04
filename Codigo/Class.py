@@ -146,7 +146,7 @@ class Player :
         if PlayerStats[0]["ImageUrl"] == "" :
             return "https://imgur.com/3be00df2-3ce0-4e04-8a51-c2a23f643219"
 
-        return PlayerStats[0]["ImageUrl"]
+        return str(PlayerStats[0]["ImageUrl"])
 
 # Create new database for server ----------------------------------------------------------------
     @staticmethod
