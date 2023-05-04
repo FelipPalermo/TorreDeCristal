@@ -47,7 +47,18 @@ class Player :
         Db = client[str(GuildID)].get_collection("Players")
         return Db
 
-# Check Exist -----------------------------------------------------------------------------------------
+# Return All database names ---------------------------------------------------------------------------
+    @staticmethod
+    def Return_DBNames(GuildID) :
+        dbnames = client.list_database_names()
+
+        if str(GuildID) in dbnames :
+            return True
+
+        else :
+            return False 
+
+# Check if player document exists -----------------------------------------------------------------------------------------
     @staticmethod
     def CheckExist(DiscordID, GuildID) :
         
@@ -56,7 +67,7 @@ class Player :
         else :
             return False
 
-        # Delete character ---------------------------------------------------------------------------    
+# Delete character ---------------------------------------------------------------------------    
     @staticmethod 
     def DelChar(nome) : 
         filtro = {"Nome" : nome}

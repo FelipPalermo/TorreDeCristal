@@ -47,40 +47,43 @@ async def delete_game_DB(ctx):
 # Create character in database ------------------------------------------- 
 @Eco.command()
 async def create(ctx) :
+    
+    if Player.Return_DBNames(ctx.guild.id) == True :
+        if Player.CheckExist(str(ctx.author.id), str(ctx.guild.id)) == False :
 
-    if Player.CheckExist(str(ctx.author.id), str(ctx.guild.id)) == False :
-
-        await ctx.reply("Lets create your character!\nWhat are your attributess?\n\
+            await ctx.reply("Lets create your character!\nWhat are your attributess?\n\
     Send me like this : Name, Maximum Hp, Maximum MP")
 
-    # check if its the same person sending the message
-    # them check the next message to get the attributes
-        def check(m : discord.Message) : 
-            return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
-        
-        try :
-            msg = await Eco.wait_for("message", check = check, timeout = 60.0)
+        # check if its the same person sending the message
+        # them check the next message to get the attributes
+            def check(m : discord.Message) : 
+                return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
+            
+            try :
+                msg = await Eco.wait_for("message", check = check, timeout = 60.0)
 
-        except asyncio.TimeoutError : 
-            await ctx.send(f"Ei {ctx.author}, não me ignora!\nAgora eu ja esqueci o que te pedi!")
-        
+            except asyncio.TimeoutError : 
+                await ctx.send(f"Ei {ctx.author}, não me ignora!\nAgora eu ja esqueci o que te pedi!")
+            
+            else :
+               
+                # Gettign user and guild ID 
+                    author = ctx.author.id
+                    authorGuild_ID = ctx.guild.id
+                    msgContent = msg.content
+                    msgContent = msgContent.split(",")
+
+                    msgContent.append(str(author))
+                    msgContent.append(str(authorGuild_ID))
+                    
+
+                    newPlayer = Player(msgContent)
+                    await ctx.reply("Thanks, you character has been sucefully created!")
+
         else :
-           
-            # Gettign user and guild ID 
-                author = ctx.author.id
-                authorGuild_ID = ctx.guild.id
-                msgContent = msg.content
-                msgContent = msgContent.split(",")
-
-                msgContent.append(str(author))
-                msgContent.append(str(authorGuild_ID))
-                
-
-                newPlayer = Player(msgContent)
-                await ctx.reply("Thanks, you character has been sucefully created!")
-
-    else :
-        await ctx.reply("Hey! You already have a character, you cant be two at once!")
+            await ctx.reply("Hey! You already have a character, you cant be two at once!")
+    else : 
+        await ctx.reply("Your server do not have an dedicated database, please ask an moderator to use \"#create_game_DB\"")
 
 @Eco.command()
 async def inv(ctx) :
@@ -171,7 +174,7 @@ async def d(ctx):
 
 
 # Conexao ------------------------------
-Token = "MTEwMjI0MjEyNDI2ODgzMDgyMQ.GOHDzi.FrLEXkzrpYIUK94joxaOtwbakT9yN6tKJwXGAc"
+Token = "MTEwMjI0MjEyNDI2ODgzMDgyMQ.G964a0.zhJo1XrVPeSQMxHlYm0vaCi3A_Rkg2AD_0Cdus"
 
 Eco.run(Token)
 
