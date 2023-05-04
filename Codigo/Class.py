@@ -18,17 +18,19 @@ class Player :
         self.Mana = int(atr[2])
         self.Corrupcao = 0
         self.DiscordID = atr[3]
+        self.DiscordGuildID = atr[4]
 
         # Return a list with the player status
         self.PlayerStats = list(Player_Data.find({"Nome" : self.Nome}).limit(1)) 
         
-        if Player_Data.count_documents({"DiscordID" : self.DiscordID}) >= 1 :
+        if client[str(self.DiscordGuildID)].Players.count_documents({"DiscordID" : self.DiscordID}) >= 1 :
             pass
 
         else :
 
-            Player_Data.insert_one({
+            client[str(self.DiscordGuildID)].Players.insert_one({
 
+                "GuildID" : self.DiscordGuildID,
                 "DiscordID" : self.DiscordID,
                 "Name" : self.Nome,
                 "Maximum life" : self.Vida_Maxima,
@@ -38,16 +40,23 @@ class Player :
                 "Corruption" : self.Corrupcao,
                 "ImageUrl" : ""})
 
-# Check Exist ---------------------------------------------------------------------------------
-    @staticmethod
-    def CheckExist(DiscordID) :
 
-        if Player_Data.count_documents({"DiscordID" : DiscordID}) >= 1 :
+# Return Players collection ---------------------------------------------------------------------------------------
+    @staticmethod
+    def Return_Guild(GuildID) :
+        Db = client[str(GuildID)].get_collection("Players")
+        return Db
+
+# Check Exist -----------------------------------------------------------------------------------------
+    @staticmethod
+    def CheckExist(DiscordID, GuildID) :
+        
+        if Player.Return_Guild(GuildID).count_documents({"DiscordID" : DiscordID}) >= 1 :
             return True
         else :
             return False
 
-# Delete character ---------------------------------------------------------------------------    
+        # Delete character ---------------------------------------------------------------------------    
     @staticmethod 
     def DelChar(nome) : 
         filtro = {"Nome" : nome}
@@ -55,43 +64,43 @@ class Player :
      
 # HP -----------------------------------------------------------------------------------------
     @staticmethod
-    def Change_MaxHp(DiscordID, value) : 
-        Player_Data.update_one({"DiscordID" : DiscordID}, {"$inc" : {"Maximum life" : value}})
+    def Change_MaxHp(DiscordID, GuildID, value) : 
+        Player.Return_Guild(GuildID).update_one({"DiscordID" : str(DiscordID)}, {"$inc" : {"Maximum life" : value}})
  
     @staticmethod
-    def Change_Hp(DiscordID, value) : 
-        PlayerStats =  list(Player_Data.find({"DiscordID" : DiscordID}).limit(1))
+    def Change_Hp(DiscordID, GuildID, value) : 
+        PlayerStats =  list(Player.Return_Guild(GuildID).find({"DiscordID" : str(DiscordID)}).limit(1))
 
        # If the value is greathr than the maxium hp, the hp goes to the maxium
         if value + PlayerStats[0]["Hp"] > PlayerStats[0]["Maximum life"] :
-            Player_Data.update_one({"DiscordID" : DiscordID}, {"$set" : {"Hp" : PlayerStats[0]["Maximum life"]}})
+            Player.Return_Guild(GuildID).update_one({"DiscordID" : str(DiscordID)}, {"$set" : {"Hp" : PlayerStats[0]["Maximum life"]}})
          
         else :
-            Player_Data.update_one({"DiscordID" : DiscordID}, {"$inc" : {"Hp" : value}})
+            Player.Return_Guild(GuildID).update_one({"DiscordID" : str(DiscordID)}, {"$inc" : {"Hp" : value}})
        
         # Prevent from hp be less than 0
         if value + PlayerStats[0]["Hp"] <= 0:
-            Player_Data.update_one({"DiscordID" : DiscordID}, {"$set" : {"Hp" : 0}})
+            Player.Return_Guild(GuildID).update_one({"DiscordID" : str(DiscordID)}, {"$set" : {"Hp" : 0}})
 
 # MP -----------------------------------------------------------------------------------------
     @staticmethod
-    def Change_MaxMp(DiscordID, value) : 
-        Player_Data.update_one({"DiscordID" : DiscordID}, {"$inc" : {"Maximum mana" : value}})
+    def Change_MaxMp(DiscordID, GuildID, value) : 
+        Player.Return_Guild(GuildID).update_one({"DiscordID" : str(DiscordID)}, {"$inc" : {"Maximum mana" : value}})
     
     @staticmethod
-    def Change_Mp(DiscordID, value) : 
-        PlayerStats =  list(Player_Data.find({"DiscordID" : DiscordID}).limit(1))
+    def Change_Mp(DiscordID, GuildID ,value) : 
+        PlayerStats =  list(Player.Return_Guild(GuildID).find({"DiscordID" : str(DiscordID)}).limit(1))
 
        # if the value is greater than maxium Mp, Mp goes to the maxium
-        if value + PlayerStats[0]["Mp"] > PlayerStats[0]["Mana Maxima"] :
-            Player_Data.update_one({"DiscordID" : DiscordID}, {"$set" : {"Mp" : PlayerStats[0]["Maximum mana"]}})
+        if value + PlayerStats[0]["Mp"] > PlayerStats[0]["Maximum mana"] :
+            Player.Return_Guild(GuildID).update_one({"DiscordID" : str(DiscordID)}, {"$set" : {"Mp" : PlayerStats[0]["Maximum mana"]}})
 
         else :
-            Player_Data.update_one({"DiscordID" : DiscordID}, {"$inc" : {"Mp" : value}})
+            Player.Return_Guild(GuildID).update_one({"DiscordID" : str(DiscordID)}, {"$inc" : {"Mp" : value}})
 
         # Prevent from Mp be less than 0
         if value + PlayerStats[0]["Mp"] <= 0:
-            Player_Data.update_one({"DiscordID" : DiscordID}, {"$set" : {"Mp" : 0}})
+            Player.Return_Guild(GuildID).update_one({"DiscordID" : DiscordID}, {"$set" : {"Mp" : 0}})
 
 # Corruption -----------------------------------------------------------------------------------
     @staticmethod
@@ -114,29 +123,45 @@ class Player :
 
 # Add or change image --------------------------------------------------------------------------
     @staticmethod
-    def cimage(DiscordID, ImageUrl) :
+    def cimage(DiscordID, GuildID, ImageUrl) :
 
-        Player_Data.update_one({"DiscordID" : DiscordID}, {"$set" : {"ImageUrl" : ImageUrl}})
+        Player.Return_Guild(str(GuildID)).update_one({"DiscordID" : str(DiscordID)}, {"$set" : {"ImageUrl" : ImageUrl}})
 
-# Return image ---------------------------------------------------------------------------------- 
+# Return image character image ---------------------------------------------------------------------------------- 
     @staticmethod
-    def Rimage(DiscordID) :   
-        PlayerStats =  list(Player_Data.find({"DiscordID" : DiscordID}).limit(1))
+    def Rimage(DiscordID, GuildID) :   
+        PlayerStats =  list(Player.Return_Guild(GuildID).find({"DiscordID" : str(DiscordID)}).limit(1))
 
         if PlayerStats[0]["ImageUrl"] == "" :
             return "https://imgur.com/3be00df2-3ce0-4e04-8a51-c2a23f643219"
 
         return PlayerStats[0]["ImageUrl"]
 
+# Create new database for server ----------------------------------------------------------------
+    @staticmethod
+    def newDB(GuildID) : 
+        newDB = client[str(GuildID)]
+    
+        PlayerCol = newDB.create_collection("Players") 
+        InvCol = newDB.create_collection("Inventory")
+
+# Delete server database ------------------------------------------------------------------------ 
+    @staticmethod
+    def deleteDB(GuildID) :
+        client.drop_database(str(GuildID))
 
 # Show -----------------------------------------------------------------------------------------
     @staticmethod
-    def Show_Status(DiscordID) : 
-        PlayerStats =  Player_Data.find_one({"DiscordID" : DiscordID})
+    def Show_Status(DiscordID, GuildID) : 
+        PlayerStats =  Player.Return_Guild(GuildID).find_one({"DiscordID" : str(DiscordID)})
 
         return PlayerStats
 
     @staticmethod
-    def Show_Inve(DiscordID) :
+    def Show_Inv(DiscordID) :
         pass
 
+
+
+# when using DiscordID convert it to string
+# GuildID is returned as INT, for comparations in collections cast to STRING 
