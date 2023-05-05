@@ -50,7 +50,9 @@ async def create_game_DB(ctx):
         NewServerCol = Server(["pt-br", str(ctx.author.id)])
 
         await ctx.reply("Succefully created database!", delete_after=5)
+
     except :
+
         await ctx.reply("Dabatase already exists!", delete_after=5)
     if Server.RAntiFlood(ctx.guild.id)  == True : await ctx.message.delete()
 
@@ -222,7 +224,7 @@ async def d(ctx):
 
 
 # Conexao ------------------------------
-Token = "MTEwMjI0MjEyNDI2ODgzMDgyMQ.GrNEUw.5wXiPLD1mY1edYeGIshrKg0OjCT3ANkjRVVFnw"
+Token = "MTEwMjI0MjEyNDI2ODgzMDgyMQ.Gk_GyS.nV-Gx3Be2uIfYtWc2kcJ9EZezTCidxSv-s2tTo"
 
 Eco.run(Token)
 
