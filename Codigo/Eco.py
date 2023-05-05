@@ -190,7 +190,7 @@ async def d(ctx):
 
 
 # Conexao ------------------------------
-Token = "MTEwMjI0MjEyNDI2ODgzMDgyMQ.GruJO6.Z_JAYBu0URaHj2REXcbNtNIcZMGQDGFdvP2EcI"
+Token = "MTEwMjI0MjEyNDI2ODgzMDgyMQ.GUBKby.ld-RX1x5i5CWSxmJlee1s1B4fI4laSFbZytm5o"
 
 Eco.run(Token)
 
