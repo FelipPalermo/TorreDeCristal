@@ -47,7 +47,7 @@ async def create_game_DB(ctx):
     try :
 
         Player.newDB(ctx.guild.id) 
-        NewServerCol = Server(["pt-br", str(ctx.author.id)])
+        NewServerCol = Server(["pt-br", str(ctx.guild.id)])
 
         await ctx.reply("Succefully created database!", delete_after=5)
 
@@ -224,7 +224,7 @@ async def d(ctx):
 
 
 # Conexao ------------------------------
-Token = "MTEwMjI0MjEyNDI2ODgzMDgyMQ.Gk_GyS.nV-Gx3Be2uIfYtWc2kcJ9EZezTCidxSv-s2tTo"
+Token = "MTEwMjI0MjDeTu-XSp-ZlkyS65vio"
 
 Eco.run(Token)
 
