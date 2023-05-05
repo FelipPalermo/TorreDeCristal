@@ -1,4 +1,5 @@
 from pymongo.mongo_client import MongoClient
+from ServerDB import Server
 uri = "mongodb+srv://FelipePalermo:ApiKey@torredecristal.zvmqwjj.mongodb.net/?retryWrites=true&w=majority"
 client = MongoClient(uri)
 
@@ -27,6 +28,9 @@ class Player :
             pass
 
         else :
+            
+            NewServerCol = Server(["pt-br", self.DiscordGuildID])
+
 
             client[str(self.DiscordGuildID)].Players.insert_one({
 
@@ -121,16 +125,16 @@ class Player :
 
 # Change name ----------------------------------------------------------------------------------
     @staticmethod
-    def Change_Name(DiscordID, Name) :
+    def Change_Name(DiscordID, GuildID, Name) :
         if len(Name) > 2:
 
             # If name array is greater than 2
             # exclude word"cname" and cast the list to string
             New_Name = " ".join(Name[1::])
-            Player_Data.update_one({"DiscordID" : DiscordID}, {"$set" : {"Name" : New_Name}})
+            Player.Return_Guild(GuildID).update_one({"DiscordID" : str(DiscordID)}, {"$set" : {"Name" : New_Name}})
 
         else : 
-            Player_Data.update_one({"DiscordID" : DiscordID}, {"$set" : {"Name" : Name[1]}})
+            Player.Return_Guild(GuildID).update_one({"DiscordID" : str(DiscordID)}, {"$set" : {"Name" : Name[1]}})
 
 # Add or change image --------------------------------------------------------------------------
     @staticmethod
