@@ -112,6 +112,8 @@ async def create(ctx) :
         await ctx.reply("Your server do not have an dedicated database, please ask an moderator to use \"#create_game_DB\"", delete_after=10)
     if Server.RAntiFlood(ctx.guild.id)  == True : await ctx.message.delete()
 
+
+# Check Inventory ------------------------------------------
 @Eco.command()
 async def inv(ctx) :
     
@@ -200,7 +202,7 @@ async def d(ctx):
 
     Dice_Faces = ctx.message.content.split(" ")
     Dice_Faces = Dice_Faces[1]
-
+    
     Roll = random.randint(1, int(Dice_Faces)) 
     
     if Roll > int(Dice_Faces) / 2 :
@@ -221,10 +223,64 @@ async def d(ctx):
     await ctx.reply(embed=embed, delete_after=15)
     if Server.RAntiFlood(ctx.guild.id)  == True : await ctx.message.delete()
 
+# Initiation command --------------------------------------------------------------
+@Eco.command()
+async def initiation(ctx) :
+   
+    Initiations = {}
+    Player_Input = "" 
 
+    await ctx.reply("Send the names in this model : (NAME  +VALUE)")
+
+    while Player_Input != "." : 
+
+              
+       
+        def check(m: discord.Message):
+            return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id 
+            
+            
+        try:
+
+            msg = await Eco.wait_for('message', check = check, timeout = 60.0)
+
+        except asyncio.TimeoutError:      
+
+            await ctx.send(f"**{ctx.author}**, you didn't send any message that meets the check in this channel for 60 seconds..")
+        
+        else :  
+
+            if msg.content == "." :
+                break           
+
+            Player_Input = msg.content
+            PI = Player_Input.split("+")
+            
+            PI[1] = int(PI[1])
+            Initiations.update({PI[0] : random.randint(1, 20) + PI[1]})
+
+
+ 
+    Initiations = list(reversed(sorted(Initiations.items(), key = lambda x:x[1])))
+
+    Final_Message = str([Initiations[i] for i in range(len(Initiations))])
+
+    Remove_Chars = ["[", "(", "\'", ")", "]"]
+    for char in Remove_Chars : 
+        Final_Message = Final_Message.replace(char, "")
+    
+    Final_Message = Final_Message.split(",")
+    
+    i = 0 
+    await ctx.send("Initation order -----------------")
+    while i <= len(Final_Message) : 
+        await ctx.send("| " + Final_Message[i] + " : " + str(Final_Message[i+1] + " |" ))
+        i += 2
+
+    await ctx.send("Initation order -----------------")
 
 # Conexao ------------------------------
-Token = "MTEwMjI0MjDeTu-XSp-ZlkyS65vio"
+Token = "MTEwMjI0MjEyNDI2ODgzMDgyMQ.GrUHt5.tzqhnD44qaipsI4eqTQvlS3xJgtVnT66H68rQ8"
 
 Eco.run(Token)
 
