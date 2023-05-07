@@ -112,7 +112,6 @@ async def create(ctx) :
         await ctx.reply("Your server do not have an dedicated database, please ask an moderator to use \"#create_game_DB\"", delete_after=10)
     if Server.RAntiFlood(ctx.guild.id)  == True : await ctx.message.delete()
 
-
 # Check Inventory ------------------------------------------
 @Eco.command()
 async def inv(ctx) :
@@ -249,28 +248,31 @@ async def initiation(ctx) :
             await ctx.send(f"**{ctx.author}**, you didn't send any message that meets the check in this channel for 60 seconds..")
         
         else :  
-
+        
             if msg.content == "." :
                 break           
 
+        # Casting string to dict 
             Player_Input = msg.content
             PI = Player_Input.split("+")
             
             PI[1] = int(PI[1])
             Initiations.update({PI[0] : random.randint(1, 20) + PI[1]})
 
-
- 
+    # Getting reversed ordened dict  
     Initiations = list(reversed(sorted(Initiations.items(), key = lambda x:x[1])))
 
+    # Casting ordenedt dict to list 
     Final_Message = str([Initiations[i] for i in range(len(Initiations))])
+    
 
     Remove_Chars = ["[", "(", "\'", ")", "]"]
     for char in Remove_Chars : 
         Final_Message = Final_Message.replace(char, "")
     
     Final_Message = Final_Message.split(",")
-    
+   
+   # Sending ordened message  
     i = 0 
     await ctx.send("Initation order -----------------")
     while i <= len(Final_Message) : 
@@ -279,17 +281,10 @@ async def initiation(ctx) :
 
     await ctx.send("Initation order -----------------")
 
-# Conexao ------------------------------
-Token = "MTEwMjI0MjEyNDI2ODgzMDgyMQ.GrUHt5.tzqhnD44qaipsI4eqTQvlS3xJgtVnT66H68rQ8"
 
+
+# Connection ------------------------------
+Token = "MTEwMjI0MjEyNDI2ODgzMDgyMQ.GbwWNA.I7wdJUjpgOWxmn6FmanayYJbwXUmwF1Zjmt9cA"
 Eco.run(Token)
-
-# -------------------Ideias------------------------
-
-
-# Um comando para inicializar o bot em um servidor e fazer ele criar um banco de dados baseado servidor
-# assim permitindo que um jogador tenha mais de um personagem em varios servidores 
-
-# Adicionar um comando para receber o ID do mestre e ele poder alterar todos os personagens
 
 
